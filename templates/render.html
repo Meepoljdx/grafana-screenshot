@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+    <script>
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        // 定期检测 iframe 高度，基于拖拽条比例计算
+        function handleIframeLoad(iframe) {
+            const url = new URL(iframe.src)
+            const panel = url.searchParams.get('panelId');
+            const intervalId = setInterval(() => {
+                try {
+                    let iframeDoc = iframe.contentDocument;
+                    if (panel == null) {
+                        let xpathVar = "//div[contains(@class,'react-grid-layout--enable-move-animations')]"
+                        let result = iframeDoc.evaluate(
+                            xpathVar,
+                            iframeDoc,
+                            null,
+                            XPathResult.FIRST_ORDERED_NODE_TYPE,
+                            null
+                        );
+                        const targetElement = result.singleNodeValue;
+                        // 检查是否找到了元素，并执行操作
+                        if (targetElement) {
+                            let nodeHeight = targetElement.offsetHeight + 50
+                            iframe.style.height = `${nodeHeight}px`;
+                            clearInterval(intervalId);
+                        }
+                        
+                        return
+                    }
+                    let initHeight = iframe.offsetHeight; // iframe 初始化时的高度
+                    let trackHeight = iframeDoc.querySelector('.track-vertical').offsetHeight; // 轨道高度
+                    let thumbHeight = iframeDoc.querySelector('.thumb-vertical').offsetHeight; // 滑块高度
+                    // 获取拖拽条和轨道元素
+                    if (thumbHeight <= 0) {
+                        // 停止检测
+                        clearInterval(intervalId);
+                        // 获取iframe的高度并对比内部的高度，除去空白部分
+                        let xpathVar = "//div[contains(@class,'scrollbar-view')]//div[contains(@class,'scrollbar-view')]/div/div"
+                        let result = iframeDoc.evaluate(
+                            xpathVar,
+                            iframeDoc,
+                            null,
+                            XPathResult.FIRST_ORDERED_NODE_TYPE,
+                            null
+                        );
+                        const targetElement = result.singleNodeValue;
+                        // 检查是否找到了元素，并执行操作
+                        if (targetElement) {
+                            let nodeHeight = targetElement.offsetHeight + 100
+                            iframe.style.height = `${nodeHeight}px`;
+                        }
+                    }
+                    //获取百分比
+                    let persentage = (thumbHeight / trackHeight)
+                    // 计算新的 iframe 高度
+                    let newHeight = (initHeight / persentage)
+                    // 调整 iframe 高度
+                    iframe.style.height = `${newHeight}px`;
+                } catch (err) {
+                    console.error('无法访问 iframe 内容，可能是跨域问题:', err);
+
+                }
+            }, 500);
+        }
+    </script>
+    <h2>{{ config.name }}</h2>
+    {% for url in config.urls %}
+        <iframe src="{{ url }}" onload="handleIframeLoad(this)" frameborder="0"></iframe>
+    {% endfor %}
+{% endblock %}

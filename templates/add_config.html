@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Add New Configuration</h2>
+    <form method="POST">
+        <label for="name">Configuration Name:</label>
+        <input type="text" name="name" required>
+        <br>
+        <label for="url">Iframe URLs:</label>
+        <div id="url-container">
+            <input name="url" placeholder="Enter iframe URL" required>
+        </div>
+        <button type="button" onclick="addUrlField()">Add Another URL</button>
+        <br><br>
+        <button type="submit">Save Configuration</button>
+    </form>
+    <script>
+        function addUrlField() {
+            const container = document.getElementById('url-container');
+            const input = document.createElement('input');
+            // input.type = 'url';
+            input.name = 'url';
+            input.placeholder = 'Enter iframe URL';
+            container.appendChild(input);
+        }
+    </script>
+{% endblock %}

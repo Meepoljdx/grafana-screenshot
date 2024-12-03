@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-md text-center">
+    <h2>Render List</h2>
+    <div class="row">
+        <ol class="list-group list-group-numbered">
+            {% for config in configs %}
+            <a href="{{ url_for('view_config', config_id=loop.index0) }}" >
+                <li class="list-group-item d-flex justify-content-between align-items-start list-group-item-action">
+                    <div class="me-auto col">
+                            <strong>{{ config.name }}</strong>
+                    </div>
+                    <div class="me-auto col">
+                        <form action="{{ url_for('delete_config', config_id=loop.index0) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <span class="badge text-bg-primary rounded-pill">{{ config.urls|length }}</span>
+                    </div>    
+                </li> </a>     
+            {% else %}
+                <li>No configurations found. Add a new one!</li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div >
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addConfigModal">
+        添加配置
+        </button>
+    </div>
+    
+    <!-- 配置弹窗 -->
+    <div class="modal fade" id="addConfigModal" tabindex="-1" aria-labelledby="addConfigModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addConfigModalLabel">添加配置</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="configForm" action="{{ url_for('add_config') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="configName" class="form-label">配置名称</label>
+                            <input type="text" class="form-control" id="configName" name="name" required>
+                        </div>
+
+                        <div class="mb-3" id="urlContainer">
+                            <label for="iframeUrl" class="form-label">iframe URL</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" name="url" required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="addUrlInput()">+</button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 动态添加 URL 输入框
+        function addUrlInput() {
+            const urlContainer = document.getElementById('urlContainer');
+            const newInputGroup = document.createElement('div');
+            newInputGroup.classList.add('input-group', 'mb-3');
+            
+            // 创建新的输入框
+            newInputGroup.innerHTML = `
+                <input class="form-control" name="url" required>
+                <button type="button" class="btn btn-outline-secondary" onclick="removeUrlInput(this)">-</button>
+            `;
+            
+            // 添加到容器中
+            urlContainer.appendChild(newInputGroup);
+        }
+    
+        // 移除 URL 输入框
+        function removeUrlInput(button) {
+            const inputGroup = button.closest('.input-group');
+            inputGroup.remove();
+        }
+    </script>
+{% endblock %}
