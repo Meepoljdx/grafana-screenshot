@@ -95,6 +95,11 @@ python app.py
 
 nginx代理完成后从浏览器访问
 
+截图脚本：
+
+```bash
+python ./screen_cut.py http://127.0.0.1:8080/view/1 ./examples/1.png
+```
 ## 界面
 
 ![image](./examples/index.png)
