@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Panel",
+        "urls": [
+            "/grafana/d-solo/DQ8yJ87Hk/e7bb84-e4bbb6-e5bfab-e7ad9b?orgId=1&panelId=2"
+        ]
+    },
+    {
+        "name": "More",
+        "urls": [
+            "/grafana/d-solo/cc0182b4-1a91-4390-99b7-e7ab8f71c7ee/e4b8bb-e69cba-e79b91-e68ea7-e8afa6-e68385?orgId=1&panelId=216",
+            "/grafana/d-solo/cc0182b4-1a91-4390-99b7-e7ab8f71c7ee/e4b8bb-e69cba-e79b91-e68ea7-e8afa6-e68385?orgId=1&panelId=220"
+        ]
+    }
+]
